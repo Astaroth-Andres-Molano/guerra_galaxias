@@ -22,11 +22,11 @@ func main() {
 		return
 	}
 
-	err = db.MigrateDB()
-	if err != nil {
-		fmt.Println("Failed to migrate the database:", err)
-		return
-	}
+	// err = db.MigrateDB()
+	// if err != nil {
+	// 	fmt.Println("Failed to migrate the database:", err)
+	// 	return
+	// }
 
 	router := gin.Default()
 

@@ -3,6 +3,7 @@
 package models
 
 import (
+	//"encoding/json"
 	"time"
 
 	"gorm.io/gorm"
@@ -33,3 +34,23 @@ type SatelliteData struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
+
+// Antes de guardar el registro, se serializa el slice de strings a JSON
+// func (s *SatelliteData) BeforeSave(tx *gorm.DB) error {
+// 	jsonData, err := json.Marshal(s.Message)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	s.Message = jsonData
+// 	return nil
+// }
+
+// Después de cargar el registro, se deserializa el JSON a slice de strings
+// func (s *SatelliteData) AfterFind(tx *gorm.DB) error {
+// 	var message []string
+// 	if err := json.Unmarshal(s.Message, &message); err != nil {
+// 		return err
+// 	}
+// 	s.Message = message
+// 	return nil
+// }
