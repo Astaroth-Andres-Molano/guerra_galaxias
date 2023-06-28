@@ -3,6 +3,7 @@
 package db
 
 import (
+	"fmt"
 	"guerra_galaxias/models"
 
 	"gorm.io/driver/postgres"
@@ -16,10 +17,11 @@ func ConnectDB() error {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return err
+		panic("Error al conectar con la base de datos: " + err.Error())
 	}
 
 	DB = db
+	fmt.Println("conexión a bd exitosa")
 	return nil
 }
 

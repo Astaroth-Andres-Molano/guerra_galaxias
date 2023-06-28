@@ -33,7 +33,9 @@ func GetTopSecret(c *gin.Context) {
 
 	position, err := GetLocation(payload.Satellites)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{
+			"error":      err.Error(),
+			"StatusCode": http.StatusNotFound})
 		return
 	}
 
@@ -44,7 +46,10 @@ func GetTopSecret(c *gin.Context) {
 		Message:  message,
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, gin.H{
+		"response":   response,
+		"StatusCode": http.StatusOK,
+	})
 }
 
 func GetLocation(distances []Satellite) (Position, error) {
