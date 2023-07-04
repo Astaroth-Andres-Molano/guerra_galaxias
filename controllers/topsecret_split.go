@@ -3,9 +3,12 @@
 package controllers
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"guerra_galaxias/db"
+	"guerra_galaxias/helpers"
 	"guerra_galaxias/models"
 
 	"github.com/gin-gonic/gin"
@@ -29,10 +32,13 @@ func SaveSatelliteData(c *gin.Context) {
 		return
 	}
 
+	message, _ := json.Marshal(payload.Message)
+	messageStr := string(message)
+	fmt.Println(messageStr, "messageData")
 	satelliteData := SatelliteData{
 		SatelliteName: satelliteName,
 		Distance:      payload.Distance,
-		Message:       payload.Message,
+		Message:       messageStr,
 	}
 
 	err := db.DB.Create(&satelliteData).Error
@@ -42,6 +48,10 @@ func SaveSatelliteData(c *gin.Context) {
 	}
 
 	c.Status(http.StatusCreated)
+	c.JSON(http.StatusOK, gin.H{
+		"response":   "Registro creado con éxito!",
+		"StatusCode": http.StatusOK,
+	})
 }
 
 func GetTopSecretSplit(c *gin.Context) {
@@ -58,12 +68,14 @@ func GetTopSecretSplit(c *gin.Context) {
 		return
 	}
 
+	var dataMessage []string
 	var satellites []Satellite
 	for _, data := range satellitesData {
+		dataMessage = helpers.FormatoMessage(data.Message)
 		satellite := Satellite{
 			Name:     data.SatelliteName,
 			Distance: data.Distance,
-			Message:  data.Message,
+			Message:  dataMessage,
 		}
 		satellites = append(satellites, satellite)
 	}
@@ -81,5 +93,9 @@ func GetTopSecretSplit(c *gin.Context) {
 		Message:  message,
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, gin.H{
+		"response":   response,
+		"StatusCode": http.StatusOK,
+		//"satellites": satellites,
+	})
 }

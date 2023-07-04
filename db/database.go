@@ -31,7 +31,5 @@ func MigrateDB() error {
 		return err
 	}
 
-	// Add migration logic for other models if needed
-
 	return nil
 }
