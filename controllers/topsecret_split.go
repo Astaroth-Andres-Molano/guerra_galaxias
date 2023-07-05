@@ -94,8 +94,81 @@ func GetTopSecretSplit(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
+		"StatusCode": http.StatusOK,
 		"response":   response,
+		//"satellites": satellites,
+	})
+}
+
+func GetOneSatellite(c *gin.Context) {
+
+	satellite := helpers.GetOneS(c.Param("satellite_name"))
+
+	if satellite == nil {
+		c.JSON(http.StatusNotFound, gin.H{"StatusCode": http.StatusNotFound, "error": "Datos no encontrados"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"response":   satellite,
 		"StatusCode": http.StatusOK,
 		//"satellites": satellites,
 	})
+}
+
+func GetAllSatellites(c *gin.Context) {
+	var satellitesData []SatelliteData
+
+	err := db.DB.Find(&satellitesData).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"StatusCode": http.StatusOK,
+		"response":   satellitesData,
+	})
+}
+
+func UpdateSatellite(c *gin.Context) {
+
+	satellite := helpers.GetOneS(c.Param("satellite_name"))
+
+	if satellite == nil {
+		c.JSON(http.StatusNotFound, gin.H{"StatusCode": http.StatusNotFound, "error": "Datos no encontrados"})
+		return
+	}
+
+	var payload models.Satellite
+
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	messageStr := helpers.FormatoSendMessage(payload.Message)
+	satelliteData := SatelliteData{
+		SatelliteName: payload.Name,
+		Distance:      payload.Distance,
+		Message:       messageStr,
+	}
+	db.DB.Model(&satellite).Updates(satelliteData)
+
+	c.JSON(http.StatusOK, gin.H{"data": satellite, "message": "Datos actualizados correctamente!"})
+}
+
+func DeleteSatellite(c *gin.Context) {
+	satellite := helpers.GetOneS(c.Param("satellite_name"))
+
+	if satellite == nil {
+		c.JSON(http.StatusNotFound, gin.H{"StatusCode": http.StatusNotFound, "error": "Datos no encontrados"})
+		return
+	}
+
+	if err := db.DB.Delete(&satellite).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"StatusCode": http.StatusOK, "message": "Satellite deleted"})
 }

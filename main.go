@@ -33,6 +33,10 @@ func main() {
 	router.POST("/topsecret/", controllers.GetTopSecret)
 	router.POST("/topsecret_split/:satellite_name", controllers.SaveSatelliteData)
 	router.GET("/topsecret_split/", controllers.GetTopSecretSplit)
+	router.GET("/topsecret_split/:satellite_name", controllers.GetOneSatellite)
+	router.GET("/topsecret_datasatellites/", controllers.GetAllSatellites)
+	router.PUT("/topsecret_split/:satellite_name", controllers.UpdateSatellite)
+	router.DELETE("/topsecret_split/:satellite_name", controllers.DeleteSatellite)
 
 	router.Run()
 }

@@ -53,11 +53,27 @@ func GetTopSecret(c *gin.Context) {
 }
 
 func GetLocation(distances []Satellite) (Position, error) {
+	var satellites = make(map[int]Satellite)
+
 	if len(distances) != 3 {
 		return Position{}, fmt.Errorf("insufficient satellite data")
 	}
 
-	x, y, err := calculateCoordinates(distances[0].Distance, distances[1].Distance, distances[2].Distance)
+	for i := range distances {
+		if distances[i].Name == "kenobi" {
+			satellites[0] = distances[i]
+		} else if distances[i].Name == "skywalker" {
+			satellites[1] = distances[i]
+		} else if distances[i].Name == "sato" {
+			satellites[2] = distances[i]
+		}
+	}
+
+	if len(satellites) != 3 {
+		return Position{}, fmt.Errorf("revise los nombres de los satelites y corrija")
+	}
+
+	x, y, err := calculateCoordinates(satellites[0].Distance, satellites[1].Distance, satellites[2].Distance)
 	if err != nil {
 		return Position{}, err
 	}
