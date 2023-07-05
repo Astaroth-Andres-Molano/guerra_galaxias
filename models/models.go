@@ -28,9 +28,15 @@ type Response struct {
 type SatelliteData struct {
 	gorm.Model
 	ID            uint    `gorm:"primary_key"`
-	SatelliteName string  `gorm:"type:character (50); unique; not null"`
+	SatelliteName string  `gorm:"type:character varying; uniqueIndex:idx_name; not null"`
 	Distance      float64 `gorm:"type: numeric; not null"`
-	Message       string  `gorm:"type: character varying (1000); not null"`
+	Message       string  `gorm:"type: character varying; not null"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+}
+
+type UpdateSatellite struct {
+	SatelliteName string  `json:"name"`
+	Distance      float64 `json:"distance"`
+	Message       string  `json:"message"`
 }
